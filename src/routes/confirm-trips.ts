@@ -1,3 +1,4 @@
+import { ClientError } from "../errors/client-error";
 import type { FastifyInstance } from "fastify";
 import { ZodTypeProvider } from "fastify-type-provider-zod";
 import { dayjs } from "../lib/dayjs";
@@ -31,7 +32,7 @@ export async function confirmTrip(app: FastifyInstance) {
       });
 
       if (!trip) {
-        throw new Error("Trip not found.");
+        throw new ClientError("Trip not found.");
       }
 
       if (trip.is_confirmed) {
@@ -50,7 +51,7 @@ export async function confirmTrip(app: FastifyInstance) {
 
       await Promise.all(
         trip.participants.map(async (participant) => {
-          const confirmationLink = `http://localhost:3333/participants/${participant.id}/confirm/`;
+          const confirmationLink = `http://localhost:3333/participants/${participant.id}/confirm`;
 
           const message = await mail.sendMail({
             from: {
